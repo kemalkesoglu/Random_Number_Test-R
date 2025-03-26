@@ -1,0 +1,1 @@
+# Rastgelelik_Testi.R
