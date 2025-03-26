@@ -106,4 +106,5 @@ dw_test_z2 <- dwtest(lm_model_z2)
 dw_test_z2
 #DW=2.02 yani DW ≈ 2 oldugu için otokarelasyon yoktur diyebiliriz.
 
-Testlerimiz ve görselleştirmelerimiz sonucunda üretilen verilerin random olduğunu söyleyebiliriz.
+#Testlerimiz ve görselleştirmelerimiz sonucunda üretilen verilerin otokorelasyonlarının olmadığını
+#Random olduğunu söyleyebiliriz.
