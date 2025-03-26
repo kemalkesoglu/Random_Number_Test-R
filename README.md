@@ -1,1 +1,1 @@
-# Rastgelelik_Testi.R
+# Random_Number_Test.R
