@@ -10,20 +10,27 @@ lcg <- function(a, c, m, run.length, seed) {
 }
 
 
+#NOT:Her çalıştırıldığında değerler değişir.
+#başlangıç seed değeri olarak sistem zamanını kullanılmıştır.
+
+
+
 #Fonksiyon ile 100 tane ve 10000 tane rastgele veri üretelim.
 set.seed(Sys.time())  
 z <- lcg(30, 90, 150, 100, sample(1:150, 1))  
 z2 <- lcg(30, 90, 150, 10000, sample(1:150, 1))  
 
 
+
 #Olusan verilerin Histogram grafiklerini çizdirelim.
-par(mfrow=c(1,4))
+par(mfrow=c(2,2))
 hist(z$x,col="blue")
-hist(z$U,col="purple")
+hist(z$U,col="green")
 hist(z2$x,col="red")
-hist(z2$U,col="black")
+hist(z2$U,col="purple")
 z
 z2
+
 
 
 #Ljung-Box test uygulayalim.
@@ -33,13 +40,13 @@ Box.test (z$x, lag = 10, type = "Ljung")
 Box.test (z$U, lag = 10, type = "Ljung")
 #Uygulanan Ljung-Box Test sonucunda P=0.75 oldugundan önemli bir otokorelasyon olmadigini söyleyebiliriz.
 
- 
 #Ljung-Box test uygulayalim.
 #Yüksek bir p degeri önemli bir otokorelasyon olmadigini gösterir.
 #Düsük bir p degeri dizinin test edilen gecikmelerdeki degerler arasinda bagimliliklara sahip oldugunu gösterir.
 Box.test (z2$x, lag = 10, type = "Ljung")
 Box.test (z2$U, lag = 10, type = "Ljung")
 #Uygulanan Ljung-Box Test sonucunda P=0.39 oldugundan önemli bir otokorelasyon olmadigini söyleyebiliriz.
+
 
 
 #Ki-Kare test uygulayalim.
@@ -58,6 +65,21 @@ chisq_test_z2
 #verilerin dagilimi ile belirtilen dagilim arasinda fark olmadigini söyleyebiliriz.
 
 
+
+#Serial Testi uygulayalim.
+library(randtoolbox)
+serial_test_z <- serial.test(z$U, d = 2, echo = TRUE)
+serial_test_z
+#Uygulanan serial test sonucunda P=0.54, a = 0.05 den büyük oldugu için H0 Reddedilemez.
+#verilerin random oldugu söylenebilir.
+
+serial_test_z2 <- serial.test(z2$U, d = 2, echo = TRUE)
+serial_test_z2
+#Uygulanan serial test sonucunda P=0.71, a = 0.05 den büyük oldugu için H0 Reddedilemez.
+#verilerin random oldugu söylenebilir.
+
+
+
 #Otokorelasyon Fonksiyonu(ACF) uygulayip gecikmeleri görsellestirelim.
 acf(z$x, main="ACF for z$x")
 acf(z$U, main="ACF for z$U")
@@ -65,6 +87,7 @@ acf(z2$x, main="ACF for z2$x")
 acf(z2$U, main="ACF for z2$U")
 #Ljung-Box test ile önemli bir otokorelasyon olmadigi söylemistik.
 #Görsel olarak çizimi yapilmistir.
+
 
 
 #Rastgelelik testi için Runs Test uygulayalim.
@@ -89,6 +112,7 @@ runs_test_z2_U
 #P degeri 0.23 oldugu için verilerin random oldugu söylenebilir.
 
 
+
 #Regresyon Modelinde
 #Durbin-Watson testi ile otokorelasyon kontrolü yapalim.
 #DW = 2 ise otokarelasyon yoktur.
@@ -99,12 +123,14 @@ if(!require(lmtest)) install.packages("lmtest")
 lm_model_z <- lm(z$x ~ seq_along(z$x))  
 dw_test_z <- dwtest(lm_model_z)  
 dw_test_z
-#DW=1.95 yani DW ≈ 2 oldugu için otokarelasyon yoktur diyebiliriz.
+#DW=1.97 yani DW ≈ 2 oldugu için otokarelasyon yoktur diyebiliriz.
 
 lm_model_z2 <- lm(z2$x ~ seq_along(z2$x))  
 dw_test_z2 <- dwtest(lm_model_z2)  
 dw_test_z2
 #DW=2.02 yani DW ≈ 2 oldugu için otokarelasyon yoktur diyebiliriz.
+
+
 
 #Testlerimiz ve görselleştirmelerimiz sonucunda üretilen verilerin otokorelasyonlarının olmadığını
 #Random olduğunu söyleyebiliriz.
